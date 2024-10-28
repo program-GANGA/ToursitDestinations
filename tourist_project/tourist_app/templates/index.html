@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tourist Destinations</title>
+    {% load static %}
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background: url("{% static 'COVER.jpg' %}") no-repeat center center;
+            background-size: cover;
+            overflow: hidden;
+        }
+
+        .navbar {
+            align-items: center;
+            background-color: rgba(255, 255, 255, 0.9);
+            padding: 15px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            width: 100%;
+            position: absolute;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .navbar a {
+            margin: 0 700px;
+            text-decoration: none;
+            color: #333;
+            font-size: 20px;
+        }
+
+        .content {
+            margin-top: 80px;
+            text-align: center;
+        }
+
+        h1 {
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .cards {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 30px;
+            justify-content: center;
+            padding: 10px;
+        }
+
+        .card {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+            width: 300px; 
+            transition: transform 0.3s;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+        }
+
+        .card-image img {
+            width: 100%;
+            height: 300px; /* Increased height */
+            object-fit: cover;
+        }
+
+        .card-content {
+            padding: 20px;
+            text-align: center;
+        }
+
+        .card-content h2 {
+            margin: 0;
+            font-size: 1.5em; /* Larger font size */
+            color: #333;
+        }
+
+        .card-content p {
+            color: #555;
+            font-size: 1em;
+            margin-bottom: 15px;
+        }
+
+        .card-buttons {
+            display: flex;
+            justify-content: center;
+            margin-top: 10px;
+            gap: 10px; 
+        }
+
+        .card-buttons button {
+            padding: 10px 15px; /* Larger button padding */
+            border-radius: 4px;
+            background-color: #00070e;
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-size: 1em;
+        }
+
+        .card-buttons button:hover {
+            background-color: #a1a4a7;
+        }
+
+        .pagination {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+            color: white;
+        }
+
+        .pagination a {
+            color: black;
+            background-color: white;
+            padding: 10px 20px;
+            margin: 0 5px;
+            text-decoration: none;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            transition: background-color 0.3s;
+        }
+
+        .pagination a:hover {
+            background-color: #746e6e;
+        }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <div>
+            <a href="{% url 'create_tour' %}">Create</a>
+        </div>
+    </div>
+
+    <div class="content">
+        <h1>Tourist Destinations</h1>
+        <div class="cards">
+            {% if page_obj %}
+                {% for item in page_obj.object_list %}
+                    <div class="card">
+                        <div class="card-image">
+                            {% if item.img %}
+                                <img src="{{ item.img }}" alt="Image of {{ item.placename }}">
+                            {% else %}
+                                <p>No image available</p>
+                            {% endif %}
+                        </div>
+                        <div class="card-content">
+                            <h2>{{ item.placename }}</h2>
+                            <p>{{ item.description|truncatewords:20 }}</p>
+                            <div class="card-buttons">
+                                <button class="action-button" data-url="{% url 'detail' item.id %}">View</button>
+                                <button class="action-button" data-url="{% url 'update' item.id %}">Update</button>
+                                <button class="delete-button" data-url="{% url 'delete' item.id %}" onclick="confirmDelete(this)">Delete</button>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        </div>
+        <div class="pagination">
+            {% if page_obj.has_previous %}
+                <a href="?page={{ page_obj.previous_page_number }}">Previous</a>
+            {% endif %}
+            {% if page_obj.has_next %}
+                <a href="?page={{ page_obj.next_page_number }}">Next</a>
+            {% endif %}
+        </div>
+    </div>
+
+    <script>
+        const buttons = document.querySelectorAll('.action-button');
+        buttons.forEach(button => {
+            button.addEventListener('click', function() {
+                const url = this.getAttribute('data-url');
+                if (url) {
+                    location.href = url;
+                }
+            });
+        });
+       
+
+        document.addEventListener("DOMContentLoaded", function() {
+    const deleteButtons = document.querySelectorAll('.delete-button');
+    
+    deleteButtons.forEach(button => {
+        button.addEventListener('click', function(event) {
+            event.preventDefault();  // Prevent default link behavior
+            const url = this.getAttribute('data-url');
+            const placeName = this.closest('.card-content').querySelector('h2').innerText;
+            
+            if (confirm(`Are you sure you want to delete ${placeName}?`)) {
+                console.log(`Deleting item with URL: ${url}`); // Log URL to confirm correctness
+                window.location.href = url;  // Redirect if confirmed
+            } else {
+                alert("Deletion canceled.");  // Cancel confirmation
+            }
+        });
+    });
+});
+
+    </script>
+</body>
+</html>

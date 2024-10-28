@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Tourist Destination</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+        h1 {
+            color: #333;
+            margin-bottom: 30px;
+            font-size: 2rem;
+            letter-spacing: 1px;
+        }
+        .form-container {
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+            width: 100%;
+            max-width: 600px;
+            margin: 10px;
+            background-color: white; /* Background color for the form */
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #444;
+            font-size: 1rem;
+            text-align: left;
+        }
+        input[type="text"], input[type="url"], textarea {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 20px;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+        input[type="text"]:focus, input[type="url"]:focus, textarea:focus {
+            border-color: #007BFF;
+            outline: none;
+        }
+        textarea {
+            resize: vertical;
+        }
+        .file-input-container {
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            margin-bottom: 20px;
+        }
+        input[type="file"] {
+            flex: 1; /* Allow the file input to take available space */
+            margin-left: 20px; /* Space between label and input */
+        }
+        button {
+            width: 100%;
+            padding: 12px;
+            background-color: #28A745;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1.1rem;
+            transition: background-color 0.3s, transform 0.2s;
+        }
+        button:hover {
+            background-color: #218838;
+            transform: scale(1.02);
+        }
+        button:active {
+            transform: scale(0.98);
+        }
+        @media (max-width: 600px) {
+            h1 {
+                font-size: 1.5rem;
+            }
+            button {
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="form-container">
+        <h1>Create Tourist Destination</h1>
+        
+        <form action="{% url 'create_tour' %}" method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            
+            <label for="placename">Place Name:</label>
+            <input type="text" name="placename" required>
+            
+            <label for="weather">Weather:</label>
+            <input type="text" name="weather" required>
+            
+            <label for="state">State:</label>
+            <input type="text" name="state" required>
+            
+            <label for="district">District:</label>
+            <input type="text" name="district" required>
+            
+            <label for="maplink">Google Map Link:</label>
+            <input type="url" name="maplink" required>
+            
+            <label for="description">Description:</label>
+            <textarea name="description" rows="4" required></textarea>
+            
+            <div class="file-input-container">
+                <label for="img">Upload Image:</label>
+                <input type="file" name="img" multiple required>
+            </div>
+            
+            <button type="submit">Create Destination</button>
+        </form>
+    </div>
+</body>
+</html>
